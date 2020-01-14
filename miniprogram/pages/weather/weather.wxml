@@ -1,0 +1,153 @@
+ <view class="wea-thead">
+    <view class="we-name">{{cityName}}</view>
+    <view class="we-regime">{{weatherState}}</view>
+    <view class="we-temperature">{{temperature}}</view>
+  </view>
+   
+<view class="wea-today">
+  <view class="today-info">
+    <view class="fo-left">
+      <label class="week">{{weekday}}</label>
+      <label class="tian">今天</label>
+    </view>
+    <view class="fo-right">
+      <label class="wd-high">{{weatherRecord.val['tmp_max']}}</label>
+      <label class="wd-low">{{weatherRecord.val['tmp_min']}}</label>
+    </view>
+  </view>
+  <view class="today-oth">
+    <view class="td-list">
+      <view class="li">
+        <label class="t-time">0时</label>
+        <icon class="ico"></icon>
+        <label class="t-du">25</label>
+      </view>
+      <view class="li">
+        <label class="t-time">0时</label>
+        <icon class="ico"></icon>
+        <label class="t-du">25</label>
+      </view>
+      <view class="li">
+        <label class="t-time">0时</label>
+        <icon class="ico"></icon>
+        <label class="t-du">25</label>
+      </view>
+      <view class="li">
+        <label class="t-time">0时</label>
+        <icon class="ico"></icon>
+        <label class="t-du">25</label>
+      </view>
+      <view class="li">
+        <label class="t-time">0时</label>
+        <icon class="ico"></icon>
+        <label class="t-du">25</label>
+      </view>
+      <view class="li">
+        <label class="t-time">0时</label>
+        <icon class="ico"></icon>
+        <label class="t-du">25</label>
+      </view>
+      <view class="li">
+        <label class="t-time">0时</label>
+        <icon class="ico"></icon>
+        <label class="t-du">25</label>
+      </view>
+      <view class="li">
+        <label class="t-time">0时</label>
+        <icon class="ico"></icon>
+        <label class="t-du">25</label>
+      </view>
+      <view class="li">
+        <label class="t-time">0时</label>
+        <icon class="ico"></icon>
+        <label class="t-du">25</label>
+      </view>
+    </view>
+  </view>
+</view>
+
+<view class="week-long">
+  <view class="loog-list">
+    <view class="mol" wx:for="{{weekLong}}" wx:for-index="index" wx:key="key" wx:for-item="v" wx:if="{{index>0}}">
+      <label class="tn">{{v.week}}</label>
+      <label class="tic">
+        <icon class="ico"></icon>
+      </label>
+      <label class="te">
+        <text class="te-hign">{{v.tmp_max}}</text>
+        <text class="te-low">{{v.tmp_min}}</text>
+      </label>
+    </view>
+  </view>
+</view>
+
+<view class="wea-describe">
+  <view class="des">{{lifeDescribe}}</view>
+</view>
+
+<view class="wea-record">
+  <view class="rec-list">
+    <view class="mok">
+      <view class="mok-tl">
+        <label class="k-t">日出</label>
+        <label class="k-d">{{weatherRecord.val['sr']}}</label>
+      </view>
+      <view class="mok-tr">
+        <label class="k-t">日落</label>
+        <label class="k-d">{{weatherRecord.val['ss']}}</label>
+      </view>
+    </view>
+    <view class="mok">
+      <view class="mok-tl">
+        <label class="k-t">月升</label>
+        <label class="k-d">{{weatherRecord.val['mr']}}</label>
+      </view>
+      <view class="mok-tr">
+        <label class="k-t">月落</label>
+        <label class="k-d">{{weatherRecord.val['ms']}}</label>
+      </view>
+    </view>
+    <view class="mok">
+      <view class="mok-tl">
+        <label class="k-t">降雨概率</label>
+        <label class="k-d">{{weatherRecord.val['pop']}}%</label>
+      </view>
+       <view class="mok-tr">
+        <label class="k-t">降水量</label>
+        <label class="k-d">{{weatherRecord.val['pcpn']}}</label>
+      </view>
+      
+    </view>
+    <view class="mok">
+      <view class="mok-tl">
+        <label class="k-t">风</label>
+        <label class="k-d">{{weatherRecord.val['wind_dir']}}{{weatherRecord.val['wind_spd']}}公里/小时</label>
+      </view>
+      <view class="mok-tr">
+        <label class="k-t">相对湿度</label>
+        <label class="k-d">{{weatherRecord.val['hum']}}</label>
+      </view>
+     
+    </view>
+    <view class="mok">
+      <view class="mok-tl">
+        <label class="k-t">气压</label>
+        <label class="k-d">{{weatherRecord.val['pres']}}百帕</label>
+      </view>
+       <view class="mok-tr">
+        <label class="k-t">体感温度</label>
+        <label class="k-d">{{weatherRecord.val['fl']}}摄氏度</label>
+      </view>
+    </view>
+    <view class="mok">
+      <view class="mok-tl">
+        <label class="k-t">能见度</label>
+        <label class="k-d">{{weatherRecord.val['vis']}}公里</label>
+      </view>
+      <view class="mok-tr">
+        <label class="k-t">紫外线指数</label>
+        <label class="k-d">{{weatherRecord.val['uv_index']}}</label>
+      </view>
+    </view>
+  </view>
+</view>
