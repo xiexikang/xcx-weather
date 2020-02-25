@@ -1,0 +1,43 @@
+/* pages/city/city.wxss */
+page{ background-color: #000;}
+.the-city{ width: 100%; overflow: hidden;}
+.city-container{ width: 100%; overflow: hidden; }
+.city-container.open{ border-radius: 20rpx;}
+.city-list{ width: 100%; overflow: hidden; background-color: rgb(0, 171, 228);}
+.city-list .item{ padding: 0 30rpx; height: 130rpx; overflow: hidden; color: #fff; 
+  border-bottom: 1px solid rgb(0, 180, 240);}
+.city-list .item .item-con{ width: 100%; height: 100%; }
+.city-list .item .item-ot{ float: left; margin-top: 25rpx;}
+.city-list .item .item-ot .time{ height:40rpx; display: block; font-size: 24rpx;}
+.city-list .item .item-ot .address{ display: block; font-size: 42rpx;}
+.city-list .item .item-tmp{ float: right; line-height: 130rpx;}
+.city-list .item .item-tmp .tmp{display: block; font-size: 66rpx;}
+.handle{ padding: 0 30rpx; height: 100rpx; line-height: 100rpx; background-color: #000;}
+.handle .un{ float: left; font-size: 30rpx;  color: #999;}
+.handle .un .tz{ padding:0 2rpx;}
+.handle .un .tc{ color: #fff;}
+.handle .un .tf{ color: #999;}
+.handle .add-btn{ width: 60rpx; height: 100%; float: right; text-align: right; }
+.handle .add-btn .ico{ width: 30rpx; height: 30rpx; display: inline-block; background-repeat: no-repeat;
+  background-image: url('https://7830-x01-a0804c-1258524456.tcb.qcloud.la/icons/cs-add-ico.png'); background-size: cover;}
+
+.serach-pop{ width: 100%; height: 95%; background-color:#1d1d1d; border-radius: 20rpx 20rpx 0 0;
+   position: fixed; bottom: 0; left: 0; z-index: 9; bottom: -95%;}  
+.serach-pop .sea-thead{ width: 100%; height: 180rpx; background-color: #303030d9; border-radius: 20rpx 20rpx 0 0; overflow: hidden; 
+  border-bottom: 1px solid rgb(100, 100, 100); }
+.serach-pop .sea-thead .thh{ width: 100%; line-height: 80rpx; text-align: center; color: #fff; font-size: 26rpx;}
+.serach-pop .sea-thead .cen{ padding: 0 30rpx; margin-top: 10rpx;}
+.serach-pop .sea-thead .ser-cover{ width: 100%; height: 60rpx; padding-right:70rpx; box-sizing: border-box; position: relative;}
+.serach-pop .cov-in{ width: 100%; height: 60rpx; background-color: rgba(134, 134, 134, 0.9); border-radius: 14rpx; position: relative;}
+.serach-pop .cov-in .ico{ width: 60rpx; height: 100%; position: absolute; left: 0; top: 0; }
+.serach-pop .cov-in .ico::after{ content: ""; width: 30rpx; height: 30rpx; background-repeat: no-repeat; position: absolute; left: 15rpx; top: 15rpx;
+  background-image: url('https://7830-x01-a0804c-1258524456.tcb.qcloud.la/icons/ico-ser.png'); background-size: cover;}
+.serach-pop .cov-in .inp{ width: 100%; height: 100%; padding:0 60rpx; box-sizing: border-box; font-size: 28rpx; color: #fff;}
+.serach-pop .cancle-btn{ line-height: 60rpx; color: #fff; font-size: 28rpx; position: absolute; right: 0; top: 0;}
+
+.sea-result{ width: 100%; max-height: calc(100% - 200rpx); overflow-x: hidden; overflow-y: auto;}
+.sea-result .res-list{ padding: 10rpx 90rpx;  overflow: hidden;}
+.sea-result .res-list .li{ width: 100%; font-size: 26rpx; color: #efefef; line-height: 1.4; padding: 20rpx 0;}
+
+.res-none{ width: 100%; text-align: center; padding: 50rpx 0;}
+.res-none .ti{ color:#efefef; font-size: 26rpx;}

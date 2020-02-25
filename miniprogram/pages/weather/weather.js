@@ -1,8 +1,8 @@
 // pages/weather/weather.js
+const db = wx.cloud.database();
 const app = getApp();
 let util = require('../../util/util.js');
 let globalData = app.globalData;
-const key = globalData.key;
 
 Page({
 
@@ -10,13 +10,15 @@ Page({
    * 页面的初始数据
    */
   data: {
-    cityName:"", //城市
-    weatherState:"", //天气状况
-    temperature:"", //温度
+    imgUrl:'https://7830-x01-a0804c-1258524456.tcb.qcloud.la',//图片路径
+    weatherParms:'', //天气参数，坐标和key
+    cityName:"", //城市名
     weekday:"", //今天周几
-    hours24:[], //24小时的温度
+    nowWeather:[],//今天天气
+    hoursHourly:[], //未来小时的温度
     weekLong:[], // 最近一周的天气
     //天气指数
+    lifestyleList:[],//天气指数列表
     lifestyles: {
       'comf': '舒适度指数',
       'cw': '洗车指数',
@@ -35,7 +37,6 @@ Page({
       'fsh': '钓鱼指数',
       'spi': '防晒指数',
     },
-    lifeDescribe:"", //今天天气气指数描述
     //天气记录相关数据
     weatherRecord:{
       keywords:['tmp_max','tmp_min','sr','ss','mr','ms','pop','pcpn','pres','hum','wind_dir','wind_spd','fl','vis','uv_index'],
@@ -58,45 +59,80 @@ Page({
       },
     },
 
+    isNight:false,//白天-黑夜状态
+
   },
 
-  //获取天气
+  // ************************以下的接口都是和风天气的开发版，更多功能需要花钱开通商业版https://console.heweather.com/app/price************************
+
+  //获取今日天气
   getWeather(location){
     let that = this,
         key = globalData.key;
-    const newWeatherRecord =  that.data.weatherRecord,
+    const newWeatherRecord = that.data.weatherRecord,
           newWeaVal = that.data.weatherRecord.val;
+    var params = {};
+    params.location = location;
+    params.key = key;
+    that.setData({
+      weatherParms:params
+    })
 
-    var params = {location:location,key:key};
+    util.showLoading('加载中...')
+
     //***现在的***
     util.requestAjax.post(`${globalData.requestUrl.weather}`+'now',params)
      .then((res)=> {
       // console.log(res)
        const data = res.data.HeWeather6[0],
               dataNow = data.now;
-        //
         newWeaVal['pres'] = dataNow.pres;
         newWeaVal['hum'] = dataNow.hum;
         newWeaVal['wind_dir'] = dataNow.wind_dir;
         newWeaVal['wind_spd'] = dataNow.wind_spd;
         newWeaVal['fl'] = dataNow.fl;
         newWeaVal['vis'] = dataNow.vis;
-
         that.setData({
+          nowWeather:dataNow,
           cityName: data.basic.location,
           weekday: util.formatWeekday(new Date()),
-          weatherState: dataNow.cond_txt,
-          temperature: dataNow.tmp,
           weatherRecord: newWeatherRecord
         })
     }).catch((res)=>{
       console.log(res);
     });
 
-    //***未来3天***
+    that.getHourWeather();
+    that.getSevenWeather();
+    that.getLifeStyle();
+
+  },
+
+  //***逐小时预报（未来1天逐三小时）***
+  getHourWeather(){
+    let that = this;
+    var params = that.data.weatherParms;
+    util.requestAjax.post(`${globalData.requestUrl.weather}`+'hourly',params)
+    .then((res)=> {
+        var hourly = res.data.HeWeather6[0].hourly;
+        // console.log(hourly)
+        that.setData({
+          hoursHourly:hourly
+        })
+      }).catch((res)=>{
+        console.log(res);
+    });
+  },
+
+  //***未来7天***
+  getSevenWeather(){
+    let that = this;
+    const newWeatherRecord =  that.data.weatherRecord,
+          newWeaVal = that.data.weatherRecord.val;
+    var params = that.data.weatherParms;
     util.requestAjax.post(`${globalData.requestUrl.weather}`+'forecast',params)
      .then((res)=> {
-      console.log(res)
+      // console.log(res)
        const data = res.data.HeWeather6[0],
             dailyForecast0 = data.daily_forecast[0],
             weekLong = data.daily_forecast,
@@ -124,12 +160,18 @@ Page({
           weatherRecord: newWeatherRecord,
           weekLong: newWeekLong
         })
+
+        that.dayNight();
         
     }).catch((res)=>{
       console.log(res);
     });
+  },
 
-    //***生活指数***
+  //***生活指数***
+  getLifeStyle(){
+    let that = this;
+    var params = that.data.weatherParms;
     util.requestAjax.post(`${globalData.requestUrl.weather}`+'lifestyle',params)
     .then((res)=> {
       // console.log(res)
@@ -160,50 +202,91 @@ Page({
         return obj;
       });
       that.setData({
-        lifeDescribe:newLifestyle[n].typeName +'：'+ newLifestyle[n].txt
+        lifestyleList:newLifestyle
       })
-      setInterval(()=>{
-        n = Math.floor(Math.random() * len + 1)-1;
-        that.setData({
-          lifeDescribe:newLifestyle[n].typeName +'：'+ newLifestyle[n].txt
-        })
-      },10e3);
 
     }).catch((res)=>{
       console.log(res);
-    });
-      
-    //***逐小时预报***
-    util.requestAjax.post(`${globalData.requestUrl.weather}`+'hourly',params)
-    .then((res)=> {
-        // console.log(res)   
-      }).catch((res)=>{
-        console.log(res);
     });
 
   },
 
   //获取地址
-  getMyLocation(){
+  getAddress(){
     let that = this;
-    wx.getLocation({
-      type: 'gcj02', //wgs84,gcj02
-      success (res) {
-        const myLatlong = `${res.latitude},${res.longitude}`;
-        that.getWeather(myLatlong)
-      },fail: (res) => {
-        console.log(res)
-      }
-     })
+    var city = wx.getStorageSync('city'),
+        myLocationAddress = wx.getStorageSync('myLocationAddress');
+    //此判断是否从city页面传过来city城市参数，反之获取自己的定位城市
+    if(city){
+      that.getWeather(city);
+    }else{
+      that.getWeather(myLocationAddress);
+    }
   },
 
+  //获取用户的授权定位
+  getMyLocation(){
+    let that = this;
+    var myLocationAddress = '';
+    if (globalData.isLocation && globalData.isLocation != '') {
+      myLocationAddress = wx.getStorageSync('myLocationAddress');
+      that.getAddress();
+     } else {
+      // 由于 getLocation 是网络请求，可能会在 Page.onLoad 之后才返回 ; 所以此处加入 callback 以防止这种情况
+      app.isLocationCallback = isLocation => {
+       if (isLocation != '') {
+          myLocationAddress = wx.getStorageSync('myLocationAddress');
+          that.getAddress();
+       }
+      }
+     }
+
+     //未获取地址前，默认为广州
+     if(globalData.is_Address!=1){
+        var originCity = '广州';
+        that.getWeather(originCity);
+     }
+
+  },
+
+  //清除缓存地址
+  removeCity(){
+    wx.removeStorageSync('city'); //此地址为city.js那传过来的city参数
+  },
+
+  //判断白天和黑夜
+  dayNight(){
+    let that = this;
+    var now = new Date(),hour = now.getHours();
+    if(hour>=6 && hour<18){
+      that.setData({
+        isNight:false
+      })
+    }else{
+      that.setData({
+        isNight:true
+      })
+    }
+  },
+
+  //页面跳转
+  jumpLink(){
+    let that = this;
+    if(globalData.is_Address!=1){
+      that.getMyLocation();
+    }else{
+      wx.navigateTo({
+        url: '../city/city',
+      })
+    }
+  },
+ 
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    this.getMyLocation();
-
+    
   },
 
   /**
@@ -217,36 +300,38 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-    
-     
+    let that = this;
+    that.getMyLocation();
   },
 
   /**
    * 生命周期函数--监听页面隐藏
    */
   onHide: function () {
-
+    this.removeCity();
   },
 
   /**
    * 生命周期函数--监听页面卸载
    */
   onUnload: function () {
-
+    this.removeCity();
   },
 
   /**
    * 页面相关事件处理函数--监听用户下拉动作
    */
   onPullDownRefresh: function () {
-
+    //执行一次是否用户位置授权
+    app.autoUserLocation();
   },
 
   /**
    * 页面上拉触底事件的处理函数
    */
   onReachBottom: function () {
-
+     //执行一次是否用户位置授权
+    app.autoUserLocation();
   },
 
   /**

@@ -1,0 +1,56 @@
+<!--pages/city/city.wxml-->
+<view class="the-city">
+  <view class="city-container {{isShowPop?'open':''}}" animation='{{animShrnk}}'>
+    <view class="city-list">
+        <view class="item" wx:for='{{myCityWeatherList}}' wx:for-item='v' wx:key='k'>
+          <view class="item-con" data-city='{{v.city}}'  bindtap="selectCityWeather">
+            <view class="item-ot">
+              <label class="time">{{time}}</label>
+              <view class="address">{{v.city}}</view>
+            </view>
+            <view class="item-tmp">
+              <label class="tmp">{{v.tmp}}</label>
+            </view>
+          </view>
+          
+        </view>
+      </view>
+      <view class="handle">
+        <view class="un">
+            <label class="tc">℃</label>
+            <label class="tz">/</label>
+            <label class="tf">℉</label>
+        </view>
+        <view class="add-btn" bindtap="bindAddPopShow">
+          <icon class="ico"></icon>
+        </view>
+      </view>
+  </view>
+
+  <view class="serach-pop"  animation="{{animSpread}}">
+    <view class="sea-thead">
+      <view class="thh">输入城市、邮政编码</view>
+      <view class="cen">
+        <view class="ser-cover">
+          <view class="cov-in">
+            <icon class="ico"></icon>
+            <input class="inp" type="text" placeholder="搜索" placeholder-style='color:#efefef' value="{{valueText}}" bindinput='bindSearchInput'></input>
+          </view>
+          <label class="cancle-btn" bindtap="bindAddPopHide">取消</label>
+        </view>
+      </view>
+    </view>
+    <view class="sea-result">
+      <view class="res-list" wx:for='{{cityResultList}}' wx:for-item='v' wx:for-index='i' wx:key='key'>
+        <view class="li" data-cityname="{{v.location}}" bindtap="bindChooseCity">{{v.location}}</view>
+      </view>
+
+      <view class="res-none" wx:if='{{addressNone}}'>
+        <view class="ti">抱歉，未找到改地址，请重新输入哦~</view>
+      </view>
+
+    </view>
+
+  </view>
+
+</view>
