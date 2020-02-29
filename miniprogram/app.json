@@ -1,14 +1,34 @@
 {
   "pages": [
+    "pages/index/index",
     "pages/weather/weather",
     "pages/city/city"
   ],
   "window": {
-    "backgroundColor": "#F6F6F6",
+    "backgroundColor": "#fff",
     "backgroundTextStyle": "light",
-    "navigationBarBackgroundColor": "#00BFFF",
-    "navigationBarTitleText": "猪头天气",
-    "navigationBarTextStyle": "white"
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "初夏天气",
+    "navigationBarTextStyle": "black"
+  },
+  "tabBar": {
+    "color": "#b6b6b6",
+    "selectedColor": "#444",
+    "backgroundColor": "#fff",
+    "list": [
+      {
+        "pagePath": "pages/weather/weather",
+        "iconPath": "images/foot-nav01.png",
+        "selectedIconPath": "images/foot-nav01-hover.png",
+        "text": "天气"
+      },
+      {
+        "pagePath": "pages/city/city",
+        "iconPath": "images/foot-nav02.png",
+        "selectedIconPath": "images/foot-nav02-hover.png",
+        "text": "城市"
+      }
+    ]
   },
   "sitemapLocation": "sitemap.json",
   "style": "v2",

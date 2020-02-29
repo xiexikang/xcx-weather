@@ -1,5 +1,5 @@
 /* pages/weather/weather.wxss */
-page{ background-color: #00BFFF;background-color: rgb(0, 171, 228); color: #fff; }
+page{ color: #fff; background-color: rgb(0, 0, 0); background-color: #00abe4; }
 .the-weather{ width: 100%; height: 100%; }
 .wea-thead{ width: 100%; text-align: center; overflow: hidden; padding-bottom: 30rpx;}
 .we-name{ font-size: 70rpx; padding-top: 40rpx;}
@@ -15,7 +15,8 @@ page{ background-color: #00BFFF;background-color: rgb(0, 171, 228); color: #fff;
 .today-info .fo-right .wd-high{ color: #fff;}
 .today-info .fo-right .wd-low{ color:rgb(209, 236, 255); margin-left: 40rpx;}
 .today-oth{ width: 100%; height: 200rpx; padding: 20rpx 25rpx; border-bottom: 1px solid #b5e4ff; overflow: hidden; box-sizing: border-box; }
-.td-list{ min-width: 50%; overflow-x: auto; overflow-y: hidden; display: flex;}
+.td-list{ min-width: 50%; overflow-x: scroll; overflow-y: hidden; display: flex;}
+.td-list::-webkit-scrollbar{ display:none }
 .td-list .li{ padding: 0 25rpx;  text-align: center;
   -webkit-box-flex: inherit;  -webkit-flex-grow: inherit;  -moz-box-flex: inherit;  -ms-flex-positive: inherit;
   flex-grow: inherit; -webkit-flex-shrink: 0;  -ms-flex-negative: 0;  flex-shrink: 0;    -webkit-box-align: center;
@@ -26,7 +27,7 @@ page{ background-color: #00BFFF;background-color: rgb(0, 171, 228); color: #fff;
 .td-list .ico{ width: 44rpx; height: 44rpx;  margin-top: 15rpx; background-size: cover; background-repeat: no-repeat;}
 .td-list .t-du{ font-size: 30rpx; margin-top: 10rpx; display: block;}
 
-.week-long{ width: 100%; height: auto; min-height:400rpx; overflow: hidden; border-bottom: 1px solid #b5e4ff;}
+.week-long{ width: 100%; height: auto; overflow: hidden; border-bottom: 1px solid #b5e4ff;}
 .loog-list{ padding: 0 30rpx; overflow: hidden;}
 .loog-list .mol{ padding: 15rpx 0; overflow: hidden;}
 .loog-list .mol .tn{ width: 25%; font-size: 30rpx; float: left;}
@@ -54,6 +55,8 @@ page{ background-color: #00BFFF;background-color: rgb(0, 171, 228); color: #fff;
 
 /* .sea-btn{ color: #fff; font-size: 24rpx; background-color: #00BFFF; position: absolute; right: 20rpx; top: 20rpx;} */
 
-.look-menu{ width: 50rpx; height: 50rpx; position: absolute; right: 30rpx; top: 30rpx; background-repeat: no-repeat;
-  background-image: url('https://7830-x01-a0804c-1258524456.tcb.qcloud.la/icons/dzcity-menu-ico.png'); background-size: cover;
-}
+.look-menu{ width: 50rpx; height: 50rpx; position: absolute; right: 30rpx; top: 30rpx; background-repeat: no-repeat; background-size: cover;
+  background-image: url('https://7765-weather-osr6u-1301385777.tcb.qcloud.la/images/dzcity-menu-ico.png'); }
+
+.pos-btn{ width: 50rpx; height: 50rpx; position: absolute; right: 30rpx; top: 30rpx; background-repeat: no-repeat; background-size: cover;
+  background-image: url('https://7765-weather-osr6u-1301385777.tcb.qcloud.la/images/dingwei-ico.png'); }

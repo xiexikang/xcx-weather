@@ -1,25 +1,37 @@
 /* pages/city/city.wxss */
-page{ background-color: #000;}
 .the-city{ width: 100%; overflow: hidden;}
 .city-container{ width: 100%; overflow: hidden; }
 .city-container.open{ border-radius: 20rpx;}
 .city-list{ width: 100%; overflow: hidden; background-color: rgb(0, 171, 228);}
-.city-list .item{ padding: 0 30rpx; height: 130rpx; overflow: hidden; color: #fff; 
-  border-bottom: 1px solid rgb(0, 180, 240);}
-.city-list .item .item-con{ width: 100%; height: 100%; }
-.city-list .item .item-ot{ float: left; margin-top: 25rpx;}
+.city-list .item{ width:100%; height: 130rpx; overflow: hidden; color: #fff;  border-bottom: 1px solid rgb(0, 180, 240);
+   display: flex;justify-content: space-between; }
+.city-list .item:last-of-type{ border-bottom: none;}
+.city-list .item .item-con{ width: 100%; height: 100%; -webkit-transition: all 0.4s;transition: all 0.4s;
+  -webkit-transform: translateX(120rpx);transform: translateX(120rpx); margin-left: -120rpx;}
+.city-list .item .item-ot{ float: left; margin-top: 20rpx; padding-left: 30rpx;}
 .city-list .item .item-ot .time{ height:40rpx; display: block; font-size: 24rpx;}
 .city-list .item .item-ot .address{ display: block; font-size: 42rpx;}
-.city-list .item .item-tmp{ float: right; line-height: 130rpx;}
+.city-list .item .item-tmp{ float: right; line-height: 130rpx; padding-right: 30rpx;}
 .city-list .item .item-tmp .tmp{display: block; font-size: 66rpx;}
-.handle{ padding: 0 30rpx; height: 100rpx; line-height: 100rpx; background-color: #000;}
+.city-list .item .del{ background-color: rgb(0, 147, 196); width: 120rpx; display: flex;flex-direction: column;
+  align-items: center;justify-content: center; color: #fff;
+  -webkit-transform: translateX(120rpx);transform: translateX(120rpx);-webkit-transition: all 0.4s; transition: all 0.4s;}
+.city-list .item.touch-move-active .item-con,
+.city-list .item.touch-move-active .del { -webkit-transform: translateX(0);transform: translateX(0);}
+
+.city-none{ width: 100%; padding:50rpx 0; text-align: center;}
+.city-none .none-img{ width: 300rpx; height: 300rpx; }
+.city-none .none-ti{ color: #fff; font-size: 24rpx; display: block; margin-top: 10rpx;}
+
+
+.handle{ padding: 0 30rpx; height: 100rpx; line-height: 100rpx; background-color: #fff;  border-top: 1px solid rgb(238, 238, 238);}
 .handle .un{ float: left; font-size: 30rpx;  color: #999;}
 .handle .un .tz{ padding:0 2rpx;}
-.handle .un .tc{ color: #fff;}
-.handle .un .tf{ color: #999;}
+.handle .un .tc{ color: #333;}
+.handle .un .tf{ color: #666;}
 .handle .add-btn{ width: 60rpx; height: 100%; float: right; text-align: right; }
-.handle .add-btn .ico{ width: 30rpx; height: 30rpx; display: inline-block; background-repeat: no-repeat;
-  background-image: url('https://7830-x01-a0804c-1258524456.tcb.qcloud.la/icons/cs-add-ico.png'); background-size: cover;}
+.handle .add-btn .ico{ width: 30rpx; height: 30rpx; display: inline-block; background-repeat: no-repeat; background-size: cover;
+  background-image: url('https://7765-weather-osr6u-1301385777.tcb.qcloud.la/images/cs-add-ico.png'); }
 
 .serach-pop{ width: 100%; height: 95%; background-color:#1d1d1d; border-radius: 20rpx 20rpx 0 0;
    position: fixed; bottom: 0; left: 0; z-index: 9; bottom: -95%;}  

@@ -10,7 +10,7 @@ Page({
    * 页面的初始数据
    */
   data: {
-    imgUrl:'https://7830-x01-a0804c-1258524456.tcb.qcloud.la',//图片路径
+    imgUrl:'https://7765-weather-osr6u-1301385777.tcb.qcloud.la',//图片路径
     weatherParms:'', //天气参数，坐标和key
     cityName:"", //城市名
     weekday:"", //今天周几
@@ -214,11 +214,18 @@ Page({
   //获取地址
   getAddress(){
     let that = this;
-    var city = wx.getStorageSync('city'),
-        myLocationAddress = wx.getStorageSync('myLocationAddress');
+    var city = that.data.city;
+    var myLocationAddress = wx.getStorageSync('myLocationAddress');
+    //city不存在就用缓存
+    if(typeof(city)=="undefined"){
+      city = wx.getStorageSync('city')
+    }else{
+      city = that.data.city;
+    }
     //此判断是否从city页面传过来city城市参数，反之获取自己的定位城市
     if(city){
       that.getWeather(city);
+      return
     }else{
       that.getWeather(myLocationAddress);
     }
@@ -229,8 +236,8 @@ Page({
     let that = this;
     var myLocationAddress = '';
     if (globalData.isLocation && globalData.isLocation != '') {
-      myLocationAddress = wx.getStorageSync('myLocationAddress');
-      that.getAddress();
+        myLocationAddress = wx.getStorageSync('myLocationAddress');
+        that.getAddress();
      } else {
       // 由于 getLocation 是网络请求，可能会在 Page.onLoad 之后才返回 ; 所以此处加入 callback 以防止这种情况
       app.isLocationCallback = isLocation => {
@@ -240,13 +247,12 @@ Page({
        }
       }
      }
-
      //未获取地址前，默认为广州
      if(globalData.is_Address!=1){
-        var originCity = '广州';
+        var city = wx.getStorageSync('city');
+        var originCity = city?city:'广州';
         that.getWeather(originCity);
      }
-
   },
 
   //清除缓存地址
@@ -280,13 +286,27 @@ Page({
       })
     }
   },
+
+ //点击执行一次是否用户位置授权
+  bindAutoUserLocation(){ 
+    let that = this;
+    app.autoUserLocation();
+    that.removeCity();
+    that.getMyLocation();
+  },
  
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    
+    let that = this;
+    //city.wxml页面传过的
+    if(options.city){
+      that.setData({
+        city: options.city
+      })
+    }
   },
 
   /**
@@ -308,14 +328,14 @@ Page({
    * 生命周期函数--监听页面隐藏
    */
   onHide: function () {
-    this.removeCity();
+    
   },
 
   /**
    * 生命周期函数--监听页面卸载
    */
   onUnload: function () {
-    this.removeCity();
+    
   },
 
   /**
@@ -323,7 +343,7 @@ Page({
    */
   onPullDownRefresh: function () {
     //执行一次是否用户位置授权
-    app.autoUserLocation();
+    // app.autoUserLocation();
   },
 
   /**
@@ -331,7 +351,7 @@ Page({
    */
   onReachBottom: function () {
      //执行一次是否用户位置授权
-    app.autoUserLocation();
+    // app.autoUserLocation();
   },
 
   /**

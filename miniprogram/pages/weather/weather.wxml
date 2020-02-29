@@ -1,9 +1,9 @@
- <wxs module="comonWxs" src="../common/common.wxs"></wxs>
+<wxs module="comonWxs" src="../common/common.wxs"></wxs>
 
 <view class="wea-thead">
-    <view class="we-name">{{cityName}}</view>
-    <view class="we-regime">{{nowWeather.cond_txt}}</view>
-    <view class="we-temperature">{{nowWeather.tmp}}</view>
+    <view class="we-name">{{cityName?cityName:'城市名'}}</view>
+    <view class="we-regime">{{nowWeather.cond_txt?nowWeather.cond_txt:'晴天'}}</view>
+    <view class="we-temperature">{{nowWeather.tmp?nowWeather.tmp:'10'}}</view>
 </view>
    
 <view class="wea-today">
@@ -30,6 +30,18 @@
         <label class="t-du">{{v.tmp}}</label>
       </view>
     </view>
+    <view class="td-list" wx:if="{{hoursHourly.length<=0}}">
+      <view class="li">
+        <label class="t-time">现在</label>
+        <icon class="ico" style="background-image:url('{{imgUrl}}/weatherIcons/100.png')"></icon>
+        <label class="t-du">10</label>
+      </view>
+      <view class="li" wx:for="{{8}}" wx:for-index="index" wx:key="key" wx:for-item="d">
+        <label class="t-time">{{d}}时</label>
+        <icon class="ico" style="background-image:url('{{imgUrl}}/weatherIcons/100.png')"></icon>
+        <label class="t-du">10</label>
+      </view>
+    </view>
   </view>
 </view>
 
@@ -44,6 +56,18 @@
       <label class="te">
         <text class="te-hign">{{v.tmp_max}}</text>
         <text class="te-low">{{v.tmp_min}}</text>
+      </label>
+    </view>
+  </view>
+  <view class="loog-list"  wx:if="{{weekLong.length<=0}}">
+    <view class="mol" wx:for="{{['一','二','三','四','五','六']}}" wx:for-index="index" wx:key="key" wx:for-item="d">
+      <label class="tn">星期{{d}}</label>
+      <label class="tic">
+        <icon class="ico" style="background-image:url('{{imgUrl}}/weatherIcons/100.png')" ></icon>
+      </label>
+      <label class="te">
+        <text class="te-hign">10</text>
+        <text class="te-low">20</text>
       </label>
     </view>
   </view>
@@ -127,4 +151,4 @@
   </view>
 </view>
  
-<navigator hover-class="none" class="look-menu" url="../city/city"></navigator>
+<view class="pos-btn" bindtap="bindAutoUserLocation"></view>

@@ -93,19 +93,21 @@ const showBusy = text => wx.showToast({
 const showLoading = text =>wx.showLoading({
   title: text,
   icon: 'loading',
-  duration: 1000
+  duration: 1200
 })
 
 // 显示普通提示
 const showTip = text => wx.showToast({
   title: text,
-  icon: 'none'
+  icon: 'none',
+  duration: 1000
 })
 
 // 显示成功提示
 const showSuccess = text => wx.showToast({
   title: text,
-  icon: 'success'
+  icon: 'success',
+  duration: 1000
 })
 
 // 显示失败提示
@@ -117,6 +119,21 @@ const showModel = (title, content) => {
     showCancel: false
   })
 }
+
+//普通页面跳转
+const pageJump = url => setTimeout(()=>{
+  wx.navigateTo({
+    url: url
+  })
+},1e3)
+
+//主菜单页
+const pageMenu = url => setTimeout(()=>{
+  wx.switchTab({
+    url: url
+  })
+},1e3)
+
 
 // 分享
 const shareEvent = (option, obj) => {
@@ -164,5 +181,7 @@ module.exports = {
   showTip: showTip, 
   showSuccess: showSuccess, 
   showModel: showModel, 
-  shareEvent: shareEvent
+  shareEvent: shareEvent,
+  pageJump: pageJump,
+  pageMenu: pageMenu 
 }

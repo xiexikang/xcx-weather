@@ -10,7 +10,8 @@ Page({
    * 页面的初始数据
    */
   data: {
-    myCityWeatherList:[],//我的城市天气列表
+    imgUrl:'https://7765-weather-osr6u-1301385777.tcb.qcloud.la',//图片路径
+    // myCityWeatherList:[],//我的城市天气列表
     animSpread: {},//展开动画
     animShrnk: {}, //收缩动画
     isShowPop:false, //弹窗状态
@@ -19,6 +20,8 @@ Page({
     cityResultList:[],//搜索成功显示的城市列表
     nowWeather:[],//城市的天气
     cityName:'',//搜索城市列表选中的城市
+    startX: 0, //开始坐标x
+    startY: 0, //开始坐标y
   },
 
   //获取城市对应的天气状况
@@ -35,7 +38,7 @@ Page({
         const now = res.data.HeWeather6[0].now;
         var tmp = now.tmp;
         that.setData({
-          nowWeather:res.data.HeWeather6[0].now
+          nowWeather: now
         })
         return now
       })
@@ -50,6 +53,7 @@ Page({
       },
       success(res){
         console.log(res)
+        util.showSuccess('添加成功~');
         that.getMyCityWeater();
       },
       fail(res) {
@@ -58,20 +62,16 @@ Page({
     })
   },
 
+
   //获取我的地址 从云后台
   getMyCityWeater(){
     let that = this;
-    if(wx.getStorageSync('myCityWeatherList')){
-      that.setData({
-        myCityWeatherList: wx.getStorageSync('myCityWeatherList')
-      })
-      return
-    }
+    //通过openid获取数据库的数据
     if(wx.getStorageSync('openid')){
       util.showLoading('加载中...');
       //
       db.collection('cityWeather').where({
-        _openid: wx.getStorageSync('openid')
+        _openid: globalData.openid
       }).get({
         async success(res){
           var result = res.data;
@@ -83,15 +83,17 @@ Page({
               // console.log(val)
               arr.push(val);
               arr.forEach((v,i)=>{
-                result[i].tmp = v.tmp
+                result[i].tmp = v.tmp;
+              })
+              result.forEach((v,i)=>{
+                v.isTouchMove = false; //用于滑动
               })
               //
               that.setData({
-                myCityWeatherList: result
+                myCityWeatherList: result,
+                isLoadList: true
               })
-              //缓存一下
-              wx.setStorageSync('myCityWeatherList', result);
-
+            
             } catch (e) {}
           }
         },fail(res){
@@ -140,7 +142,6 @@ Page({
     });
   },
 
-  
   //搜索列表中的-选中该城市
   bindChooseCity(e){
     let that = this;
@@ -157,12 +158,8 @@ Page({
     let that = this;
     let city = e.currentTarget.dataset.city;
     wx.setStorageSync('city', city);
-    wx.navigateTo({
-      url: '../weather/weather',
-    })
+    util.pageMenu('../weather/weather?city=' + city);
   },
-  
-
   
   //打开弹窗-
   bindAddPopShow(){
@@ -231,11 +228,103 @@ Page({
     })
   },
 
- 
   //转换格式
   formatNumber(n){
     n = n.toString()
     return n[1] ? n : '0' + n
+  },
+
+  
+  //开始触摸时
+  touchstart(e) {
+    var that = this;
+    var items = that.data.myCityWeatherList;
+    items.forEach(function (v, i) {
+      if (v.isTouchMove){
+        v.isTouchMove = false;
+      }
+    })
+    that.setData({
+      startX: e.changedTouches[0].clientX,
+      startY: e.changedTouches[0].clientY,
+      myCityWeatherList: that.data.myCityWeatherList
+    })
+  },
+
+  //滑动事件处理
+  touchmove(e) {
+    var that = this,
+      items = that.data.myCityWeatherList,
+      index = e.currentTarget.dataset.index,//当前索引
+      startX = that.data.startX,//开始X坐标
+      startY = that.data.startY,//开始Y坐标
+      touchMoveX = e.changedTouches[0].clientX,//滑动变化坐标
+      touchMoveY = e.changedTouches[0].clientY,//滑动变化坐标
+      //获取滑动角度
+      angle = that.angle({ X: startX, Y: startY }, { X: touchMoveX, Y: touchMoveY });
+
+    items.forEach(function (v, i) {
+      v.isTouchMove = false
+      //滑动超过30度角 return
+      if (Math.abs(angle) > 30) return;
+      if (i == index) {
+        if (touchMoveX > startX){
+          v.isTouchMove = false;  //右滑
+        }else{
+          v.isTouchMove = true; //左滑
+        } 
+      }
+    })
+   
+    that.setData({
+      myCityWeatherList: that.data.myCityWeatherList
+    })
+  },
+ 
+  // 计算滑动角度 start 起点坐标  end 终点坐标
+  angle(start, end) {
+    var _X = end.X - start.X,
+      _Y = end.Y - start.Y
+    //返回角度 /Math.atan()返回数字的反正切值
+    return 360 * Math.atan(_Y / _X) / (2 * Math.PI);
+  },
+
+ 
+  //删除城市
+  bindDelete(e) {
+    var that = this,
+        id = e.currentTarget.dataset.id,
+        index = e.currentTarget.dataset.index,
+        items = that.data.myCityWeatherList;
+    items[index].isTouchMove = true; 
+    that.setData({
+      myCityWeatherList: that.data.myCityWeatherList
+    })
+    wx.showModal({
+      title: '温馨提示',
+      content: '亲，您确定要取消此城市吗？',
+      success(res) {
+        if (res.confirm) {
+          db.collection('cityWeather').doc(id).remove({
+            success(res) {
+              items.splice(index, 1);
+              that.setData({
+                myCityWeatherList: that.data.myCityWeatherList
+              })
+              util.showSuccess('删除成功~');
+            },fail(res){
+              console.log(res)
+            }
+          })
+        } else if (res.cancel) {
+          items[index].isTouchMove = false;
+          that.setData({
+            myCityWeatherList: that.data.myCityWeatherList
+          })
+        }
+      }
+    })
+  
   },
 
   /**
@@ -265,21 +354,21 @@ Page({
    * 生命周期函数--监听页面隐藏
    */
   onHide: function () {
-
+    
   },
 
   /**
    * 生命周期函数--监听页面卸载
    */
   onUnload: function () {
-
+    
   },
 
   /**
    * 页面相关事件处理函数--监听用户下拉动作
    */
   onPullDownRefresh: function () {
-
+    wx.stopPullDownRefresh();
   },
 
   /**

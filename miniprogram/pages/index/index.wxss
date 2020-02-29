@@ -1,0 +1,7 @@
+/* pages/index/index.wxss */
+.the-index{ width: 100%; overflow: hidden;}
+.the-index .logo{ width: 100%; margin-top: 110rpx; text-align: center;}
+.the-index .logo .img{ width: 340rpx; height: 340rpx; display: inline-block;}
+.the-index .txt{ width: 100%; position: fixed; bottom: 150rpx; text-align: center;}
+.the-index .txt .th{ font-size: 50rpx; color: #00BFFF; font-weight: 700;}
+.the-index .txt .des{ font-size: 26rpx; color: rgb(23, 197, 255); margin-top: 20rpx;}

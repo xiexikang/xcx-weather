@@ -1,0 +1,10 @@
+<!--pages/index/index.wxml-->
+<view class="the-index">
+  <view class="logo">
+    <image class="img" src="{{imgUrl}}/xcx-logo.png"></image>
+  </view>
+  <view class="txt">
+    <view class="th">初夏天气</view>
+    <view class="des">不要着急,最好的东西总会在不经意间出现.</view>
+  </view>
+</view>

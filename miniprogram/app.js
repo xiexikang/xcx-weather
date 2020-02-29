@@ -25,7 +25,11 @@ App({
       name: 'login',
       data: {},
       success(res) {
-        wx.setStorageSync('openid', res.result.openid)
+        wx.setStorageSync('openid', res.result.openid);
+        that.globalData.openid = res.result.openid;
+      },
+      fail(res){
+        console.log(res)
       }
     })
   },
@@ -53,7 +57,7 @@ App({
     wx.getSetting({
       success(res) {
         if (!res.authSetting['scope.userLocation']) {
-          console.log('未授权')
+          console.log('位置未授权')
           that.globalData.is_Address = 0;
           wx.authorize({
             scope: 'scope.userLocation',
@@ -61,42 +65,46 @@ App({
               that.getWxLocation();
             },
             fail(res){
-              console.log('~~取消授权~~')
+              console.log('~~取消位置授权~~')
               wx.showModal({
                   title:'定位失败',
-                  content:'请允许”使用我的地理位置“后，再查看定位城市信息，小猪默认为您展示广州天气信息。',
+                  content:'请允许”使用我的地理位置“后，再查看定位城市信息，默认为您展示广州的天气信息。',
+                  showCancel:false,
                   success(res) {
-                    if (res.cancel) {
-                      console.log('点击取消');
-                   } else {
-                    wx.openSetting({
-                      success: (ret) => {
-                        if(ret.authSetting['scope.userLocation']){
-                          that.getWxLocation();
-                        }else{}
-                       }
-                    })
-                  }
+                    if (res.confirm) {
+                      wx.openSetting({
+                        success: (ret) => {
+                          if(ret.authSetting['scope.userLocation']){
+                            that.getWxLocation();
+                          }else{
+                            //返回-回调
+                            if (that.isCancleCallback){
+                              that.isCancleCallback(ret);
+                             }
+                          }
+                         }
+                      })
+                   }
                 }
               })
             }
           })
         }else{
-          console.log('已授权')
+          console.log('位置已授权')
           that.getWxLocation();
         }
       }
     })
   },
 
+
   globalData:{
-    // 是否保持常亮，离开小程序失效
+    openid:'',
     keepscreenon:false,
     systeminfo: {},
     isIPhoneX: false,
     key: '01958cf7f6f44fe6a3e9d22a7743836b',
-    mapKey: "MKWBZ-IH53W-NGSRB-OTOS7-2SW52-AHBOI",
-    weatherIconUrl: 'https://cdn.heweather.com/cond_icon/',
+    mapKey: "V6WBZ-P4H6X-2GG4Y-7UV45-ANAX5-WWF4E",
     requestUrl: {
       weather: 'https://free-api.heweather.net/s6/weather/',
       weatherNow: 'https://free-api.heweather.net/s6/weather/now/',

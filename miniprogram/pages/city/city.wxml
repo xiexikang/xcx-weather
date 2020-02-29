@@ -1,9 +1,10 @@
 <!--pages/city/city.wxml-->
 <view class="the-city">
   <view class="city-container {{isShowPop?'open':''}}" animation='{{animShrnk}}'>
-    <view class="city-list">
-        <view class="item" wx:for='{{myCityWeatherList}}' wx:for-item='v' wx:key='k'>
-          <view class="item-con" data-city='{{v.city}}'  bindtap="selectCityWeather">
+      <view class="city-list" wx:if="{{myCityWeatherList.length>0}}">
+      <block wx:for='{{myCityWeatherList}}' wx:for-item='v' wx:key='k'>
+        <view class="item {{v.isTouchMove?'touch-move-active':''}}" data-index="{{index}}" bindtouchstart="touchstart" bindtouchmove="touchmove" >
+          <view class="item-con" data-city='{{v.city}}' bindtap="selectCityWeather">
             <view class="item-ot">
               <label class="time">{{time}}</label>
               <view class="address">{{v.city}}</view>
@@ -12,19 +13,25 @@
               <label class="tmp">{{v.tmp}}</label>
             </view>
           </view>
-          
+          <view class="del" catchtap="bindDelete" data-index="{{index}}" data-id="{{v._id}}">删除</view>
         </view>
+      </block>
+    </view>
+    <view class="city-none" wx:if="{{myCityWeatherList.length<=0 || myCityWeatherList==undefined}}">
+      <image class="none-img" src="{{imgUrl}}/images/none-img2.png"></image>
+      <label class="none-ti">亲，您还没添加任何城市哦~</label>
+    </view>
+
+    <view class="handle">
+      <view class="un">
+          <label class="tc">℃</label>
+          <label class="tz">/</label>
+          <label class="tf">℉</label>
       </view>
-      <view class="handle">
-        <view class="un">
-            <label class="tc">℃</label>
-            <label class="tz">/</label>
-            <label class="tf">℉</label>
-        </view>
-        <view class="add-btn" bindtap="bindAddPopShow">
-          <icon class="ico"></icon>
-        </view>
+      <view class="add-btn" bindtap="bindAddPopShow">
+        <icon class="ico"></icon>
       </view>
+    </view>
   </view>
 
   <view class="serach-pop"  animation="{{animSpread}}">
