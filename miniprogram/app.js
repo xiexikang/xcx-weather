@@ -14,24 +14,15 @@ App({
       })
     }
 
-    this.getOpenId();
+    this.getOpenid();
     this.autoUserLocation();
+
   },
 
-  //获取openId
-  getOpenId(){
-    let that = this;
-    wx.cloud.callFunction({
-      name: 'login',
-      data: {},
-      success(res) {
-        wx.setStorageSync('openid', res.result.openid);
-        that.globalData.openid = res.result.openid;
-      },
-      fail(res){
-        console.log(res)
-      }
-    })
+  //获取openid顺序：globalData--storage--云函数login
+  getOpenid: async function () {
+    (this.globalData.openid = this.globalData.openid || wx.getStorageSync('openid')) || wx.setStorageSync('openid', this.globalData.openid = (await wx.cloud.callFunction({ name: 'login' })).result.openid)
+    return this.globalData.openid
   },
 
   //获取用户微信地址
@@ -114,6 +105,8 @@ App({
     },
     isLocation: 0, //是否已授权地理位置 用于callback回调的
     is_Address: 0, //用于判断的授权状态的 0否，1是
-  }
+    city: null, //选中的城市
+  },
+ 
 
 })

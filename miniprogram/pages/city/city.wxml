@@ -10,10 +10,10 @@
               <view class="address">{{v.city}}</view>
             </view>
             <view class="item-tmp">
-              <label class="tmp">{{v.tmp}}</label>
+              <label class="tmp">{{v.tmp?v.tmp:'--'}}</label>
             </view>
           </view>
-          <view class="del" catchtap="bindDelete" data-index="{{index}}" data-id="{{v._id}}">删除</view>
+          <view class="del" catchtap="bindDelete" data-index="{{index}}" data-city="{{v.city}}">删除</view>
         </view>
       </block>
     </view>
@@ -36,7 +36,7 @@
 
   <view class="serach-pop"  animation="{{animSpread}}">
     <view class="sea-thead">
-      <view class="thh">输入城市、邮政编码</view>
+      <view class="thh">输入您要搜索的城市</view>
       <view class="cen">
         <view class="ser-cover">
           <view class="cov-in">
@@ -47,15 +47,27 @@
         </view>
       </view>
     </view>
+
     <view class="sea-result">
-      <view class="res-list" wx:for='{{cityResultList}}' wx:for-item='v' wx:for-index='i' wx:key='key'>
-        <view class="li" data-cityname="{{v.location}}" bindtap="bindChooseCity">{{v.location}}</view>
+      <view class="res-list">
+        <block wx:for='{{cityResultList}}' wx:for-item='v' wx:for-index='i' wx:key='key'>
+          <view class="li" data-cityname="{{v.location}}" bindtap="bindChooseCity">{{v.location}}</view>
+        </block>
       </view>
-
       <view class="res-none" wx:if='{{addressNone}}'>
-        <view class="ti">抱歉，未找到改地址，请重新输入哦~</view>
+        <view class="ti">抱歉，未找到该地址，请重新输入哦~</view>
       </view>
+    </view>
 
+    <view class="sea-hot" wx:if='{{hotCityState}}'>
+      <view class="hot-th">热门城市：</view>
+      <view class="hot-list">
+        <block wx:for='{{hotCityList}}' wx:for-item='v' wx:for-index='i' wx:key='key'>
+          <view class="li" data-cityname="{{v.location}}" bindtap="bindChooseCity">
+            <label class="ti">{{v.location}}</label>
+          </view>
+        </block>
+      </view>
     </view>
 
   </view>

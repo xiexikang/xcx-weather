@@ -163,9 +163,7 @@ const shareEvent = (option, obj) => {
     // console.log(option.target)
 
   }
-
   return shareObj;
-
   }
 
 

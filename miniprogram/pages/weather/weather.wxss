@@ -4,14 +4,14 @@ page{ color: #fff; background-color: rgb(0, 0, 0); background-color: #00abe4; }
 .wea-thead{ width: 100%; text-align: center; overflow: hidden; padding-bottom: 30rpx;}
 .we-name{ font-size: 70rpx; padding-top: 40rpx;}
 .we-regime{ font-size: 36rpx; margin-top: 15rpx;}
-.we-temperature{ font-size:90rpx; margin-top: 15rpx;}
+.we-temperature{ font-size:98rpx; margin-top: 15rpx;}
 
 .wea-today{ width: 100%;  height: auto; overflow: hidden;}
 .today-info{ width: 100%;padding: 20rpx 30rpx; border-bottom: 1px solid #b5e4ff; overflow: hidden; box-sizing: border-box;}
 .today-info .fo-left{ float: left;}
-.today-info .fo-left .week{ font-size: 34rpx;}
-.today-info .fo-left .tian{ font-size: 26rpx; margin-left: 10rpx;}
-.today-info .fo-right{ float: right; font-size: 30rpx;}
+.today-info .fo-left .week{ font-size: 36rpx;}
+.today-info .fo-left .tian{ font-size: 30rpx; margin-left: 10rpx;}
+.today-info .fo-right{ float: right; font-size: 32rpx;}
 .today-info .fo-right .wd-high{ color: #fff;}
 .today-info .fo-right .wd-low{ color:rgb(209, 236, 255); margin-left: 40rpx;}
 .today-oth{ width: 100%; height: 200rpx; padding: 20rpx 25rpx; border-bottom: 1px solid #b5e4ff; overflow: hidden; box-sizing: border-box; }
@@ -23,22 +23,22 @@ page{ color: #fff; background-color: rgb(0, 0, 0); background-color: #00abe4; }
   -webkit-align-items: center;  -ms-flex-align: center;  align-items: center;  -webkit-box-pack: center;
   -webkit-justify-content: center;  -ms-flex-pack: center;  justify-content: center;  -webkit-tap-highlight-color: transparent;
 }
-.td-list .t-time{ font-size: 26rpx; display: block;}
-.td-list .ico{ width: 44rpx; height: 44rpx;  margin-top: 15rpx; background-size: cover; background-repeat: no-repeat;}
+.td-list .t-time{ font-size: 30rpx; display: block;}
+.td-list .ico{ width: 50rpx; height: 50rpx;  margin-top: 15rpx; background-size: cover; background-repeat: no-repeat;}
 .td-list .t-du{ font-size: 30rpx; margin-top: 10rpx; display: block;}
 
 .week-long{ width: 100%; height: auto; overflow: hidden; border-bottom: 1px solid #b5e4ff;}
-.loog-list{ padding: 0 30rpx; overflow: hidden;}
+.loog-list{ padding: 0 30rpx; padding-top: 10px; overflow: hidden;}
 .loog-list .mol{ padding: 15rpx 0; overflow: hidden;}
-.loog-list .mol .tn{ width: 25%; font-size: 30rpx; float: left;}
+.loog-list .mol .tn{ width: 25%; font-size: 32rpx; float: left;}
 .loog-list .mol .tic{ width: 50%; float: left; text-align: center;}
-.loog-list .mol .tic .ico{ width: 44rpx; height: 44rpx; background-size: cover; background-repeat: no-repeat;}
-.loog-list .mol .te{ width: 25%; float: right; text-align: right; font-size: 26rpx;}
+.loog-list .mol .tic .ico{ width: 50rpx; height: 50rpx; background-size: cover; background-repeat: no-repeat;}
+.loog-list .mol .te{ width: 25%; float: right; text-align: right; font-size: 32rpx;}
 .loog-list .mol .te .te-hign{ margin-right: 30rpx;}
 .loog-list .mol .te .te-low{ color: rgb(209, 236, 255);}
 
 .wea-describe{ width: 100%; min-height:150rpx; overflow: hidden; border-bottom: 1px solid #b5e4ff; padding: 20rpx 30rpx; box-sizing: border-box; }
-.wea-describe .des{ font-size: 28rpx; line-height: 2; }
+.wea-describe .des{ font-size: 30rpx; line-height: 2; }
 .life-swiper{ width: 100%; height: 100rpx;}
 .life-swiper .li-item{ width: 100%; height: 100%; font-size: 28rpx; line-height: 2; display: -webkit-box;
   -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden;}
@@ -50,7 +50,7 @@ page{ color: #fff; background-color: rgb(0, 0, 0); background-color: #00abe4; }
 .wea-record .rec-list .mok .mok-tl,.wea-record .rec-list .mok .mok-tr{ width: 50%; float:left; overflow: hidden;
   padding-right: 15rpx; box-sizing: border-box; }
 .wea-record .rec-list .mok .mok-tr{ float: right;}
-.wea-record .rec-list .k-t{ font-size: 20rpx; color: rgb(209, 236, 255); display: block;}
+.wea-record .rec-list .k-t{ font-size: 24rpx; color: rgb(209, 236, 255); display: block;}
 .wea-record .rec-list .k-d{ font-size: 36rpx; color: #fff; display: block; margin-top: 5rpx; }
 
 /* .sea-btn{ color: #fff; font-size: 24rpx; background-color: #00BFFF; position: absolute; right: 20rpx; top: 20rpx;} */

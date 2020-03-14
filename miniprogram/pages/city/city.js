@@ -11,7 +11,8 @@ Page({
    */
   data: {
     imgUrl:'https://7765-weather-osr6u-1301385777.tcb.qcloud.la',//图片路径
-    // myCityWeatherList:[],//我的城市天气列表
+    openid:'',
+    myCityWeatherList:[],//我的城市天气列表
     animSpread: {},//展开动画
     animShrnk: {}, //收缩动画
     isShowPop:false, //弹窗状态
@@ -20,6 +21,8 @@ Page({
     cityResultList:[],//搜索成功显示的城市列表
     nowWeather:[],//城市的天气
     cityName:'',//搜索城市列表选中的城市
+    hotCityList:[],//热门城市
+    hotCityState:true, //热门城市显示状态
     startX: 0, //开始坐标x
     startY: 0, //开始坐标y
   },
@@ -34,7 +37,6 @@ Page({
     params.key = key;
     return util.requestAjax.post(`${globalData.requestUrl.weather}`+'now',params)
       .then((res)=> {
-        // console.log(res)
         const now = res.data.HeWeather6[0].now;
         var tmp = now.tmp;
         that.setData({
@@ -44,63 +46,172 @@ Page({
       })
   },
 
-  //添加城市集的天气到云后台
-  addCityWeather(){
+  //获取我的地址 从云后台
+  getMyCityWeater(){
     let that = this;
-    db.collection('cityWeather').add({
-      data: {
-        city: that.data.cityName
-      },
-      success(res){
-        console.log(res)
-        util.showSuccess('添加成功~');
-        that.getMyCityWeater();
-      },
-      fail(res) {
+    util.showLoading('加载中...');
+    db.collection('cityWeather').where({
+      _openid: that.data.openid
+    }).get({
+      async success(res){
+        // console.log(res.data)
+        var result = res.data;
+        if(result.length <= 0){
+          console.log('没有自己');
+        }else{
+          var cityArr = result[0].cityArr;
+          //异步回调 async一下
+          let arr = [],newArr;
+          for (let i = 0; i < cityArr.length; i++) {
+            try {
+              let val = await that.getWeather(cityArr[i]);
+              // console.log(val)
+              arr.push(val);
+              //重整一下数组
+                newArr = arr.map(((item, index)=> {
+                return Object.assign(item,{city:cityArr[index],isTouchMove:false})
+              }))
+            } catch (e) {}
+          }
+          that.setData({
+            myCityWeatherList: newArr
+          })
+        }
+       
+      },fail(res){
         console.log(res)
       }
     })
   },
 
-
-  //获取我的地址 从云后台
-  getMyCityWeater(){
+  //添加城市集的天气到云后台
+  addCityWeather(){
     let that = this;
-    //通过openid获取数据库的数据
-    if(wx.getStorageSync('openid')){
-      util.showLoading('加载中...');
-      //
-      db.collection('cityWeather').where({
-        _openid: globalData.openid
-      }).get({
-        async success(res){
-          var result = res.data;
-          //异步回调 async一下
-          let arr = [];
-          for (let i = 0; i < result.length; i++) {
-            try {
-              let val = await that.getWeather(result[i].city);
-              // console.log(val)
-              arr.push(val);
-              arr.forEach((v,i)=>{
-                result[i].tmp = v.tmp;
-              })
-              result.forEach((v,i)=>{
-                v.isTouchMove = false; //用于滑动
-              })
-              //
-              that.setData({
-                myCityWeatherList: result,
-                isLoadList: true
-              })
-            
-            } catch (e) {}
+    //调用云函数
+    wx.cloud.callFunction({
+      name: 'cityWeather',
+      data: {
+        city: that.data.cityName
+      },
+      success(res) {
+        const result = res.result;
+        var city =  result.city;
+        var openid = res.openid;
+        db.collection('cityWeather').where({
+          _openid: openid
+        }).get().then(res => {
+          const data = res.data;
+          //没有自己-添加
+          if(data.length <= 0){
+            var cityArr = [];
+            cityArr.push(city);
+            db.collection('cityWeather').add({
+              data: {
+                cityArr: cityArr
+              },
+              success(res){
+                util.showSuccess('添加成功~');
+                that.getMyCityWeater();
+              },
+              fail(res) {
+                console.log(res)
+              }
+            })
+          }else{
+            //有自己-更新
+            var cityArr = data[0].cityArr,
+                docId = data[0]._id;
+            cityArr.push(city);
+            db.collection('cityWeather').doc(docId).update({
+              data: {
+                cityArr: cityArr
+              },
+              success(res){
+                util.showSuccess('添加成功~');
+                that.getMyCityWeater();
+              }
+            })
           }
-        },fail(res){
-          console.log(res)
+        })
+      }
+    })
+  },
+
+  //删除城市
+  bindDelete(e) {
+    var that = this,
+        city = e.currentTarget.dataset.city,
+        index = e.currentTarget.dataset.index,
+        items = that.data.myCityWeatherList;
+    items[index].isTouchMove = true; 
+    that.setData({
+      myCityWeatherList: items
+    })
+    wx.showModal({
+      title: '温馨提示',
+      content: '亲，您确定要取消此城市吗？',
+      success(res) {
+        if (res.confirm) {
+           //调用云函数
+          wx.cloud.callFunction({
+            name: 'cityWeather',
+            data: {
+              city: city
+            },
+            success(res) {
+              db.collection('cityWeather').where({
+                _openid: that.data.openid
+              }).get().then(res => {
+                const data = res.data;
+                if(data.length > 0){
+                  var cityArr = data[0].cityArr,
+                      docId = data[0]._id;
+                  cityArr.splice(index, 1);
+                  db.collection('cityWeather').doc(docId).update({
+                    data: {
+                      cityArr: cityArr
+                    },
+                    success(res) {
+                      items.splice(index, 1);
+                      that.setData({
+                        myCityWeatherList: items
+                      })
+                      util.showSuccess('删除成功~');
+                    },fail(res){
+                      console.log(res)
+                    }
+                  })
+                }
+              })
+            }
+          })
+        } else if (res.cancel) {
+          items[index].isTouchMove = false;
+          that.setData({
+            myCityWeatherList: items
+          })
         }
-      })
-    }
+      }
+    })
+  },
+
+  //获取热门城市
+  getHotCity(){
+    let that = this;
+    let parameters = {};
+    parameters.key = globalData.key;
+    parameters.group = 'cn';
+    parameters.number = 12;
+    util.requestAjax.post(`${globalData.requestUrl.cityHot}`,parameters) 
+    .then((res)=> {
+        const data =  res.data.HeWeather6[0];
+        const basic = data.basic;
+        that.setData({
+          hotCityList:basic,
+        })
+      }).catch((res)=>{
+        console.log(res);
+    });
   },
 
   //搜索城市-键盘输入监听
@@ -112,7 +223,8 @@ Page({
     })
     if(value==''||value==null||value==undefined){
       that.setData({
-        cityResultList:[]
+        cityResultList:[],
+        hotCityState:true
       })
       return
     }
@@ -137,6 +249,9 @@ Page({
             addressNone:false
           })
         }
+        that.setData({
+          hotCityState:false
+        })
       }).catch((res)=>{
         console.log(res);
     });
@@ -155,10 +270,10 @@ Page({
 
   //我的城市集中-选择
   selectCityWeather(e){
-    let that = this;
-    let city = e.currentTarget.dataset.city;
-    wx.setStorageSync('city', city);
-    util.pageMenu('../weather/weather?city=' + city);
+    let that = this,
+        city = e.currentTarget.dataset.city;
+    globalData.city = city; //存选中的城市，跳转会用到
+    util.pageMenu('/pages/weather/weather');
   },
   
   //打开弹窗-
@@ -181,6 +296,8 @@ Page({
       animShrnk: animShrnk.export(),
       isShowPop:true
     })
+
+    // that.getHotCity();
   },
 
   //隐藏弹窗-
@@ -203,7 +320,8 @@ Page({
       animShrnk: animShrnk.export(),
       isShowPop:false,
       valueText:'',
-      cityResultList:[]
+      cityResultList:[],
+      hotCityState:true
     })
   },
 
@@ -234,7 +352,6 @@ Page({
     return n[1] ? n : '0' + n
   },
 
-  
   //开始触摸时
   touchstart(e) {
     var that = this;
@@ -289,51 +406,19 @@ Page({
     return 360 * Math.atan(_Y / _X) / (2 * Math.PI);
   },
 
- 
-  //删除城市
-  bindDelete(e) {
-    var that = this,
-        id = e.currentTarget.dataset.id,
-        index = e.currentTarget.dataset.index,
-        items = that.data.myCityWeatherList;
-    items[index].isTouchMove = true; 
-    that.setData({
-      myCityWeatherList: that.data.myCityWeatherList
-    })
-    wx.showModal({
-      title: '温馨提示',
-      content: '亲，您确定要取消此城市吗？',
-      success(res) {
-        if (res.confirm) {
-          db.collection('cityWeather').doc(id).remove({
-            success(res) {
-              items.splice(index, 1);
-              that.setData({
-                myCityWeatherList: that.data.myCityWeatherList
-              })
-              util.showSuccess('删除成功~');
-            },fail(res){
-              console.log(res)
-            }
-          })
-        } else if (res.cancel) {
-          items[index].isTouchMove = false;
-          that.setData({
-            myCityWeatherList: that.data.myCityWeatherList
-          })
-        }
-      }
-    })
-  
-  },
 
   /**
    * 生命周期函数--监听页面加载
    */
-  onLoad: function (options) {
+  onLoad: async function () {
     let that = this;
+    const openid = await app.getOpenid(); //获取openid
+    that.setData({
+      openid :openid
+    })
     that.getTime();
     that.getMyCityWeater();
+    that.getHotCity();
   },
 
   /**
@@ -354,14 +439,14 @@ Page({
    * 生命周期函数--监听页面隐藏
    */
   onHide: function () {
-    
+    this.bindAddPopHide();
   },
 
   /**
    * 生命周期函数--监听页面卸载
    */
   onUnload: function () {
-    
+    this.bindAddPopHide();
   },
 
   /**

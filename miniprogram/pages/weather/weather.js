@@ -218,10 +218,11 @@ Page({
     var myLocationAddress = wx.getStorageSync('myLocationAddress');
     //city不存在就用缓存
     if(typeof(city)=="undefined"){
-      city = wx.getStorageSync('city')
+      city = globalData.city;
     }else{
       city = that.data.city;
     }
+    // console.log(city)
     //此判断是否从city页面传过来city城市参数，反之获取自己的定位城市
     if(city){
       that.getWeather(city);
@@ -238,18 +239,21 @@ Page({
     if (globalData.isLocation && globalData.isLocation != '') {
         myLocationAddress = wx.getStorageSync('myLocationAddress');
         that.getAddress();
+        // that.getWeather(myLocationAddress);
      } else {
       // 由于 getLocation 是网络请求，可能会在 Page.onLoad 之后才返回 ; 所以此处加入 callback 以防止这种情况
       app.isLocationCallback = isLocation => {
        if (isLocation != '') {
           myLocationAddress = wx.getStorageSync('myLocationAddress');
           that.getAddress();
+          // that.getWeather(myLocationAddress);
        }
       }
      }
      //未获取地址前，默认为广州
      if(globalData.is_Address!=1){
-        var city = wx.getStorageSync('city');
+        // var city = wx.getStorageSync('city');
+        var city = globalData.city;
         var originCity = city?city:'广州';
         that.getWeather(originCity);
      }
@@ -257,7 +261,12 @@ Page({
 
   //清除缓存地址
   removeCity(){
-    wx.removeStorageSync('city'); //此地址为city.js那传过来的city参数
+    let that = this;
+    // wx.removeStorageSync('city'); //此地址为city.js那传过来的city参数
+    globalData.city = null;
+    that.setData({
+      city: globalData.city
+    })
   },
 
   //判断白天和黑夜
@@ -275,18 +284,7 @@ Page({
     }
   },
 
-  //页面跳转
-  jumpLink(){
-    let that = this;
-    if(globalData.is_Address!=1){
-      that.getMyLocation();
-    }else{
-      wx.navigateTo({
-        url: '../city/city',
-      })
-    }
-  },
-
+ 
  //点击执行一次是否用户位置授权
   bindAutoUserLocation(){ 
     let that = this;
@@ -294,19 +292,13 @@ Page({
     that.removeCity();
     that.getMyLocation();
   },
- 
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
     let that = this;
-    //city.wxml页面传过的
-    if(options.city){
-      that.setData({
-        city: options.city
-      })
-    }
+
   },
 
   /**
@@ -321,6 +313,12 @@ Page({
    */
   onShow: function () {
     let that = this;
+    // console.log(globalData.city)
+    if(globalData.city){
+      that.setData({
+        city: globalData.city
+      })
+    }
     that.getMyLocation();
   },
 

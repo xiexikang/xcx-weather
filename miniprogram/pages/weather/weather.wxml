@@ -1,9 +1,9 @@
 <wxs module="comonWxs" src="../common/common.wxs"></wxs>
 
 <view class="wea-thead">
-    <view class="we-name">{{cityName?cityName:'城市名'}}</view>
-    <view class="we-regime">{{nowWeather.cond_txt?nowWeather.cond_txt:'晴天'}}</view>
-    <view class="we-temperature">{{nowWeather.tmp?nowWeather.tmp:'10'}}</view>
+    <view class="we-name">{{cityName?cityName:'城市'}}</view>
+    <view class="we-regime">{{nowWeather.cond_txt?nowWeather.cond_txt:'-'}}</view>
+    <view class="we-temperature">{{nowWeather.tmp?nowWeather.tmp:'-'}}</view>
 </view>
    
 <view class="wea-today">
