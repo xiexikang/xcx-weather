@@ -101,24 +101,27 @@ Page({
     }).catch((res)=>{
       console.log(res);
     });
-
-    that.getHourWeather();
-    that.getSevenWeather();
-    that.getLifeStyle();
-
+    //
+    Promise.all([that.getHourWeather(),that.getSevenWeather(),that.getLifeStyle()])
+      .then((res) => {
+      //  console.log(res)
+      })
+      .catch((err)=>{
+      })
   },
 
   //***逐小时预报（未来1天逐三小时）***
   getHourWeather(){
     let that = this;
     var params = that.data.weatherParms;
-    util.requestAjax.post(`${globalData.requestUrl.weather}`+'hourly',params)
+  return util.requestAjax.post(`${globalData.requestUrl.weather}`+'hourly',params)
     .then((res)=> {
         var hourly = res.data.HeWeather6[0].hourly;
         // console.log(hourly)
         that.setData({
           hoursHourly:hourly
         })
+        return res.data.HeWeather6[0]
       }).catch((res)=>{
         console.log(res);
     });
@@ -130,7 +133,7 @@ Page({
     const newWeatherRecord =  that.data.weatherRecord,
           newWeaVal = that.data.weatherRecord.val;
     var params = that.data.weatherParms;
-    util.requestAjax.post(`${globalData.requestUrl.weather}`+'forecast',params)
+    return util.requestAjax.post(`${globalData.requestUrl.weather}`+'forecast',params)
      .then((res)=> {
       // console.log(res)
        const data = res.data.HeWeather6[0],
@@ -160,8 +163,8 @@ Page({
           weatherRecord: newWeatherRecord,
           weekLong: newWeekLong
         })
-
         that.dayNight();
+        return res.data.HeWeather6[0]
         
     }).catch((res)=>{
       console.log(res);
@@ -172,7 +175,7 @@ Page({
   getLifeStyle(){
     let that = this;
     var params = that.data.weatherParms;
-    util.requestAjax.post(`${globalData.requestUrl.weather}`+'lifestyle',params)
+    return util.requestAjax.post(`${globalData.requestUrl.weather}`+'lifestyle',params)
     .then((res)=> {
       // console.log(res)
       const data = res.data.HeWeather6[0],
@@ -204,7 +207,7 @@ Page({
       that.setData({
         lifestyleList:newLifestyle
       })
-
+      return res.data.HeWeather6[0]
     }).catch((res)=>{
       console.log(res);
     });
