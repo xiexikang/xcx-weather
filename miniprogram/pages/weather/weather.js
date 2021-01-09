@@ -38,10 +38,9 @@ Page({
           weatherInfo: now,
           weekday: util.formatWeek(now.obsTime)
         })
-      }).catch((error) => {}).finally(() => {
         util.hideLoading();
         wx.stopPullDownRefresh();
-      })
+      }).catch((err) => {})
     this.getHour(params);
     this.getSeven(params);
     this.getLifeStyle(params);

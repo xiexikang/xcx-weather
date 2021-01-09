@@ -66,12 +66,11 @@ Page({
             loading: false
           })
         })
+        util.hideLoading();
+        wx.stopPullDownRefresh();
       },
       fail(err) {
         console.log(err)
-      }, complete(){
-        util.hideLoading();
-        wx.stopPullDownRefresh();
       }
     })
   },
