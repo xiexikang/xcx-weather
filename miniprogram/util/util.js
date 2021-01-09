@@ -46,6 +46,13 @@ const formatTime = date => {
   return [year, month, day].map(formatNumber).join('-') + ' ' + [hour, minute].map(formatNumber).join(':')
 }
 
+const formatHourMinute = date => {
+  var myDate = new Date(Date.parse(date));  
+  var hour = myDate.getHours();
+  const minute = myDate.getMinutes()
+  return [hour, minute].map(formatNumber).join(':')
+}
+
 
 //得到时间格式2020-01-10
 const formatDate = date => {
@@ -71,8 +78,9 @@ const formatWeek  = date => {
 }
 
 //时间转换为小时
-const turnHour = date => {
-  var hour = date.substr(11,2);
+const formatHour = date => {
+  var myDate = new Date(Date.parse(date));  
+  var hour = myDate.getHours();
   return hour
 }
 
@@ -93,8 +101,11 @@ const showBusy = text => wx.showToast({
 const showLoading = text =>wx.showLoading({
   title: text,
   icon: 'loading',
-  duration: 1200
 })
+
+const hideLoading = text =>setTimeout(()=> {
+  wx.hideLoading()
+}, .5e3)
 
 // 显示普通提示
 const showTip = text => wx.showToast({
@@ -110,76 +121,25 @@ const showSuccess = text => wx.showToast({
   duration: 1000
 })
 
-// 显示失败提示
-const showModel = (title, content) => {
-  wx.hideToast();
-  wx.showModal({
-    title,
-    content: JSON.stringify(content),
-    showCancel: false
-  })
-}
-
-//普通页面跳转
-const pageJump = url => setTimeout(()=>{
-  wx.navigateTo({
-    url: url
-  })
-},1e3)
-
 //主菜单页
 const pageMenu = url => setTimeout(()=>{
   wx.switchTab({
     url: url
   })
-},1e3)
-
-
-// 分享
-const shareEvent = (option, obj) => {
-  let shareObj = {
-    title: obj.title,
-    path: obj.path,
-    imageUrl: obj.imageUrl,
-    success(res) {
-      if (res.errMsg == 'shareAppMessage:ok') {
-
-        }
-    },
-    fail(res) {
-      if (res.errMsg == 'shareAppMessage:fail cancel') {
-
-      } else if (res.errMsg == 'shareAppMessage:fail') {
-      
-      }
-    },
-    complete(res) {
-
-    }
-  };
-
-  // 来自页面内转发按钮
-  if (option.from === 'button') {
-    // console.log(option.target)
-
-  }
-  return shareObj;
-  }
-
+},.5e3)
 
 module.exports = {
-  requestAjax : requestAjax,
-  formatTime : formatTime,
-  formatDate: formatDate,
-  formatWeek: formatWeek,
-  formatWeekday : formatWeekday,
-  turnHour : turnHour,
-  showBusy: showBusy, 
-  showLoading: showLoading, 
-  showTip: showTip, 
-  showSuccess: showSuccess, 
-  showModel: showModel, 
-  shareEvent: shareEvent,
-  pageJump: pageJump,
-  pageMenu: pageMenu 
+  requestAjax,
+  formatTime,
+  formatHourMinute,
+  formatDate,
+  formatWeek,
+  formatWeekday,
+  formatHour,
+  showBusy, 
+  showLoading, 
+  hideLoading,
+  showTip, 
+  showSuccess,
+  pageMenu
 }

@@ -1,32 +1,36 @@
 <!--pages/city/city.wxml-->
 <view class="the-city">
+
   <view class="city-container {{isShowPop?'open':''}}" animation='{{animShrnk}}'>
-      <view class="city-list" wx:if="{{myCityWeatherList.length>0}}">
-      <block wx:for='{{myCityWeatherList}}' wx:for-item='v' wx:key='k'>
-        <view class="item {{v.isTouchMove?'touch-move-active':''}}" data-index="{{index}}" bindtouchstart="touchstart" bindtouchmove="touchmove" >
-          <view class="item-con" data-city='{{v.city}}' bindtap="selectCityWeather">
-            <view class="item-ot">
-              <label class="time">{{time}}</label>
-              <view class="address">{{v.city}}</view>
+    <block wx:if="{{!loading}}">
+      <view class="city-list" wx:if="{{myCityList.length>0}}">
+        <block wx:for='{{myCityList}}' wx:for-item='v' wx:key='k'>
+          <view class="item {{v.isTouchMove?'touch-move-active':''}}" data-index="{{index}}" bindtouchstart="touchstart"
+            bindtouchmove="touchmove">
+            <view class="item-con" data-cityname='{{v.cityName}}' data-location="{{v.location }}" bindtap="bindSelect">
+              <view class="item-ot">
+                <label class="time">{{v.time}}</label>
+                <view class="address">{{v.cityName}}</view>
+              </view>
+              <view class="item-tmp">
+                <label class="tmp">{{v.temp?v.temp:'--'}}</label>
+              </view>
             </view>
-            <view class="item-tmp">
-              <label class="tmp">{{v.tmp?v.tmp:'--'}}</label>
-            </view>
+            <view class="del" catchtap="bindDelete" data-index="{{index}}" data-city="{{v.city}}">删除</view>
           </view>
-          <view class="del" catchtap="bindDelete" data-index="{{index}}" data-city="{{v.city}}">删除</view>
-        </view>
-      </block>
-    </view>
-    <view class="city-none" wx:if="{{myCityWeatherList.length<=0 || myCityWeatherList==undefined}}">
-      <image class="none-img" src="{{imgUrl}}/images/none-img2.png"></image>
-      <label class="none-ti">亲，您还没添加任何城市哦~</label>
-    </view>
+        </block>
+      </view>
+      <view class="city-none" wx:else>
+        <image class="none-img" src="{{imgUrl}}/images/none-img2.png"></image>
+        <label class="none-ti">亲，您还没添加任何城市哦~</label>
+      </view>
+    </block>
 
     <view class="handle">
       <view class="un">
-          <label class="tc">℃</label>
-          <label class="tz">/</label>
-          <label class="tf">℉</label>
+        <label class="tc">℃</label>
+        <label class="tz">/</label>
+        <label class="tf">℉</label>
       </view>
       <view class="add-btn" bindtap="bindAddPopShow">
         <icon class="ico"></icon>
@@ -34,14 +38,15 @@
     </view>
   </view>
 
-  <view class="serach-pop"  animation="{{animSpread}}">
+  <view class="serach-pop" animation="{{animSpread}}">
     <view class="sea-thead">
       <view class="thh">输入您要搜索的城市</view>
       <view class="cen">
         <view class="ser-cover">
           <view class="cov-in">
             <icon class="ico"></icon>
-            <input class="inp" type="text" placeholder="搜索" placeholder-style='color:#efefef' value="{{valueText}}" bindinput='bindSearchInput'></input>
+            <input class="inp" type="text" placeholder="搜索" placeholder-style='color:#efefef' value="{{valueText}}"
+              bindinput='bindSearchInput'></input>
           </view>
           <label class="cancle-btn" bindtap="bindAddPopHide">取消</label>
         </view>
@@ -51,20 +56,22 @@
     <view class="sea-result">
       <view class="res-list">
         <block wx:for='{{cityResultList}}' wx:for-item='v' wx:for-index='i' wx:key='key'>
-          <view class="li" data-cityname="{{v.location}}" bindtap="bindChooseCity">{{v.location}}</view>
+          <view class="li" data-cityname="{{v.name}}" data-longitude="{{v.lon}}" data-latitude="{{v.lat}}"
+            bindtap="bindChoose">{{v.name}}，{{v.adm2}}，{{v.adm1}}</view>
         </block>
       </view>
-      <view class="res-none" wx:if='{{addressNone}}'>
+      <view class="res-none" wx:if='{{isSearchNone}}'>
         <view class="ti">抱歉，未找到该地址，请重新输入哦~</view>
       </view>
     </view>
 
-    <view class="sea-hot" wx:if='{{hotCityState}}'>
+    <view class="sea-hot" wx:if='{{isShowHotCity}}'>
       <view class="hot-th">热门城市：</view>
       <view class="hot-list">
-        <block wx:for='{{hotCityList}}' wx:for-item='v' wx:for-index='i' wx:key='key'>
-          <view class="li" data-cityname="{{v.location}}" bindtap="bindChooseCity">
-            <label class="ti">{{v.location}}</label>
+        <block wx:for='{{topCityList}}' wx:for-item='v' wx:for-index='i' wx:key='key'>
+          <view class="li" data-cityname="{{v.name}}" data-longitude="{{v.lon}}" data-latitude="{{v.lat}}"
+            bindtap="bindChoose">
+            <label class="ti">{{v.name}}</label>
           </view>
         </block>
       </view>

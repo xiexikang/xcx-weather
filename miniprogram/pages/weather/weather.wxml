@@ -1,69 +1,57 @@
-<wxs module="comonWxs" src="../common/common.wxs"></wxs>
 
 <view class="wea-thead">
-    <view class="we-name">{{cityName?cityName:'城市'}}</view>
-    <view class="we-regime">{{nowWeather.cond_txt?nowWeather.cond_txt:'-'}}</view>
-    <view class="we-temperature">{{nowWeather.tmp?nowWeather.tmp:'-'}}</view>
+  <view class="we-name">{{cityName?cityName:'城市'}}</view>
+  <view class="we-regime">{{weatherInfo.text}}</view>
+  <view class="we-temperature">{{weatherInfo.temp}}</view>
 </view>
-   
+
 <view class="wea-today">
   <view class="today-info">
     <view class="fo-left">
       <label class="week">{{weekday}}</label>
       <label class="tian">今天</label>
     </view>
-    <view class="fo-right">
-      <label class="wd-high">{{weatherRecord.val['tmp_max']}}</label>
-      <label class="wd-low">{{weatherRecord.val['tmp_min']}}</label>
+    <view class="fo-right" v-if='weekLong.length>0'>
+      <label class="wd-high">{{weekLong[0].tempMax}}</label>
+      <label class="wd-low">{{weekLong[0].tempMin}}</label>
     </view>
   </view>
   <view class="today-oth">
-    <view class="td-list" wx:if="{{hoursHourly.length>0}}">
+    <view class="td-list" wx:if="{{hourlyList.length>0}}">
       <view class="li">
         <label class="t-time">现在</label>
-        <icon class="ico" style="background-image:url('{{imgUrl}}/weatherIcons/{{nowWeather.cond_code}}.png')" wx:if='{{nowWeather.cond_code!=null}}'></icon>
-        <label class="t-du">{{nowWeather.tmp}}</label>
+        <icon class="ico" style="background-image:url('{{imgUrl}}/icons/{{weatherInfo.icon}}.png')"></icon>
+        <label class="t-du">{{weatherInfo.temp}}</label>
       </view>
-      <view class="li" wx:for="{{hoursHourly}}" wx:for-index="index" wx:key="key" wx:for-item="v">
-        <label class="t-time">{{comonWxs.turnHour(v.time)}}时</label>
-        <icon class="ico" style="background-image:url('{{imgUrl}}/weatherIcons/{{v.cond_code}}.png')"></icon>
-        <label class="t-du">{{v.tmp}}</label>
-      </view>
-    </view>
-    <view class="td-list" wx:if="{{hoursHourly.length<=0}}">
-      <view class="li">
-        <label class="t-time">现在</label>
-        <icon class="ico" style="background-image:url('{{imgUrl}}/weatherIcons/100.png')"></icon>
-        <label class="t-du">10</label>
-      </view>
-      <view class="li" wx:for="{{8}}" wx:for-index="index" wx:key="key" wx:for-item="d">
-        <label class="t-time">{{d}}时</label>
-        <icon class="ico" style="background-image:url('{{imgUrl}}/weatherIcons/100.png')"></icon>
-        <label class="t-du">10</label>
+      <view class="li" wx:for="{{hourlyList}}" wx:for-index="index" wx:key="key" wx:for-item="v">
+        <label class="t-time">{{v.hour}}时</label>
+        <icon class="ico" style="background-image:url('{{imgUrl}}/icons/{{v.icon}}.png')"></icon>
+        <label class="t-du">{{v.temp}}</label>
       </view>
     </view>
   </view>
 </view>
 
 <view class="week-long">
-  <view class="loog-list"  wx:if="{{weekLong.length>0}}">
+  <view class="loog-list" wx:if="{{weekLong.length>0}}">
     <view class="mol" wx:for="{{weekLong}}" wx:for-index="index" wx:key="key" wx:for-item="v" wx:if="{{index>0}}">
       <label class="tn">{{v.week}}</label>
       <label class="tic">
-        <icon class="ico" style="background-image:url('{{imgUrl}}/weatherIcons/{{v.cond_code_d}}.png')" wx:if='!isNight'></icon>
-        <icon class="ico" style="background-image:url('{{imgUrl}}/weatherIcons/{{v.cond_code_n}}.png')" wx:else></icon>
+        <icon class="ico" style="background-image:url('{{imgUrl}}/icons/{{v.iconDay}}.png')" wx:if='!isNight'>
+        </icon>
+        <icon class="ico" style="background-image:url('{{imgUrl}}/icons/{{v.iconNight}}.png')" wx:else></icon>
       </label>
       <label class="te">
-        <text class="te-hign">{{v.tmp_max}}</text>
-        <text class="te-low">{{v.tmp_min}}</text>
+        <text class="te-hign">{{v.tempMax}}</text>
+        <text class="te-low">{{v.tempMin}}</text>
       </label>
     </view>
   </view>
-  <view class="loog-list"  wx:if="{{weekLong.length<=0}}">
+  <view class="loog-list" wx:if="{{weekLong.length<=0}}">
     <view class="mol" wx:for="{{['一','二','三','四','五','六']}}" wx:for-index="index" wx:key="key" wx:for-item="d">
       <label class="tn">星期{{d}}</label>
       <label class="tic">
-        <icon class="ico" style="background-image:url('{{imgUrl}}/weatherIcons/100.png')" ></icon>
+        <icon class="ico" style="background-image:url('{{imgUrl}}/icons/100.png')"></icon>
       </label>
       <label class="te">
         <text class="te-hign">10</text>
@@ -74,81 +62,84 @@
 </view>
 
 <view class="wea-describe">
-  <swiper class="life-swiper" vertical="true" autoplay="true" circular="true" interval="5000" wx:if="{{lifestyleList.length>0}}">
+  <swiper class="life-swiper" vertical="true" autoplay="true" circular="true" interval="5000"
+    wx:if="{{lifestyleList.length>0}}">
     <block wx:for='{{lifestyleList}}' wx:for-item='v' wx:key='k'>
       <swiper-item class='li-item'>
-        <label class="ti">{{v.typeName}}：</label>
-        <label class="td">{{v.txt}}</label>
+        <label class="ti">{{v.name}}：</label>
+        <label class="td">{{v.text}}</label>
       </swiper-item>
     </block>
   </swiper>
 </view>
 
 <view class="wea-record">
-  <view class="rec-list">
-    <view class="mok">
-      <view class="mok-tl">
-        <label class="k-t">日出</label>
-        <label class="k-d">{{weatherRecord.val['sr']}}</label>
+  <view class="rec-list" v-if='{{weekLong.length>0}}'>
+    <view wx:for="{{weekLong}}" wx:for-index="index" wx:key="key" wx:for-item="v" wx:if="{{index==0}}">
+      <view class="mok">
+        <view class="mok-tl">
+          <label class="k-t">日出</label>
+          <label class="k-d">{{v.sunrise}}</label>
+        </view>
+        <view class="mok-tr">
+          <label class="k-t">日落</label>
+          <label class="k-d">{{v.sunset}}</label>
+        </view>
       </view>
-      <view class="mok-tr">
-        <label class="k-t">日落</label>
-        <label class="k-d">{{weatherRecord.val['ss']}}</label>
+      <view class="mok">
+        <view class="mok-tl">
+          <label class="k-t">月升</label>
+          <label class="k-d">{{v.moonrise}}</label>
+        </view>
+        <view class="mok-tr">
+          <label class="k-t">月落</label>
+          <label class="k-d">{{v.moonset}}</label>
+        </view>
       </view>
-    </view>
-    <view class="mok">
-      <view class="mok-tl">
-        <label class="k-t">月升</label>
-        <label class="k-d">{{weatherRecord.val['mr']}}</label>
+      <view class="mok">
+        <view class="mok-tl">
+          <label class="k-t">降水量</label>
+          <label class="k-d">{{v.precip}}</label>
+        </view>
+        <view class="mok-tr">
+          <label class="k-t">云量</label>
+          <label class="k-d">{{v.cloud}}</label>
+        </view>
       </view>
-      <view class="mok-tr">
-        <label class="k-t">月落</label>
-        <label class="k-d">{{weatherRecord.val['ms']}}</label>
+      <view class="mok">
+        <view class="mok-tl">
+          <label class="k-t">风</label>
+          <label class="k-d">{{!isNight?v.windDirDay:v.windDirNight}}{{v.windSpeedNight}}公里/小时</label>
+        </view>
+        <view class="mok-tr">
+          <label class="k-t">相对湿度</label>
+          <label class="k-d">{{v.humidity}}</label>
+        </view>
       </view>
-    </view>
-    <view class="mok">
-      <view class="mok-tl">
-        <label class="k-t">降雨概率</label>
-        <label class="k-d">{{weatherRecord.val['pop']}}%</label>
+      <view class="mok">
+        <view class="mok-tl">
+          <label class="k-t">气压</label>
+          <label class="k-d">{{v.pressure}}百帕</label>
+        </view>
+        <view class="mok-tr">
+          <label class="k-t">体感温度</label>
+          <label class="k-d">{{weatherInfo.feelsLike}}摄氏度</label>
+        </view>
       </view>
-       <view class="mok-tr">
-        <label class="k-t">降水量</label>
-        <label class="k-d">{{weatherRecord.val['pcpn']}}</label>
-      </view>
-      
-    </view>
-    <view class="mok">
-      <view class="mok-tl">
-        <label class="k-t">风</label>
-        <label class="k-d">{{weatherRecord.val['wind_dir']}}{{weatherRecord.val['wind_spd']}}公里/小时</label>
-      </view>
-      <view class="mok-tr">
-        <label class="k-t">相对湿度</label>
-        <label class="k-d">{{weatherRecord.val['hum']}}</label>
-      </view>
-     
-    </view>
-    <view class="mok">
-      <view class="mok-tl">
-        <label class="k-t">气压</label>
-        <label class="k-d">{{weatherRecord.val['pres']}}百帕</label>
-      </view>
-       <view class="mok-tr">
-        <label class="k-t">体感温度</label>
-        <label class="k-d">{{weatherRecord.val['fl']}}摄氏度</label>
-      </view>
-    </view>
-    <view class="mok">
-      <view class="mok-tl">
-        <label class="k-t">能见度</label>
-        <label class="k-d">{{weatherRecord.val['vis']}}公里</label>
-      </view>
-      <view class="mok-tr">
-        <label class="k-t">紫外线指数</label>
-        <label class="k-d">{{weatherRecord.val['uv_index']}}</label>
+      <view class="mok">
+        <view class="mok-tl">
+          <label class="k-t">能见度</label>
+          <label class="k-d">{{v.vis}}公里</label>
+        </view>
+        <view class="mok-tr">
+          <label class="k-t">紫外线指数</label>
+          <label class="k-d">{{v.uvIndex}}</label>
+        </view>
       </view>
     </view>
   </view>
 </view>
- 
-<view class="pos-btn" bindtap="bindAutoUserLocation"></view>
+
+<view class="pos-btn" bindtap="bindAutoUserLocation" wx:if="{{!isCancle}}"></view>
+
+<view class="pos-btn pos-btn2" bindtap="bindGetUserLocation" wx:if="{{isCancle}}"></view>

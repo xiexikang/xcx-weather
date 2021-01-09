@@ -11,27 +11,13 @@ Page({
    */
   data: {
     imgUrl:'../../images',//图片路径
-
   },
 
-  
-  //检测是否是首页
-  cheackPagesIndex(){
-    // console.log('111')
-    let pages = getCurrentPages();
-    let currPage = null;
-    if (pages.length) {
-      currPage = pages[pages.length - 1];
-    }
-    let route = currPage.route;
-    console.log(route)
-    
-  },
 
   //检测跳转判断, 这个是点击 返回后回调
   jumpJudge(){
-    app.isCancleCallback = isCancle=>{
-      if(isCancle !=''){
+    app.isCancleCallback = res =>{
+      if(res){
         util.pageMenu('../weather/weather');
       }
     }
@@ -39,18 +25,16 @@ Page({
 
   //获取用户的授权定位 判断  
   getMyAutoLocation(){
-    let that = this;
-    if (globalData.isLocation && globalData.isLocation != '') {
+    if (globalData.isLocation) {
         util.pageMenu('../weather/weather');
-        that.jumpJudge();
      } else {  
-      that.jumpJudge();
       // 由于 getLocation 是网络请求，可能会在 Page.onLoad 之后才返回 ; 所以此处加入 callback 以防止这种情况
-      app.isLocationCallback = isLocation => {
-       if (isLocation != '') {
+      app.isLocationCallback = res => {
+       if (res) {
           util.pageMenu('../weather/weather');
        }
       }
+      this.jumpJudge();
      }
   },
 
