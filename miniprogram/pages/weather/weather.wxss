@@ -7,7 +7,7 @@ page{ color: #fff; background-color: rgb(0, 0, 0); background-color: #00abe4; }
 .we-temperature{ font-size:98rpx; margin-top: 15rpx;}
 
 .wea-today{ width: 100%;  height: auto; overflow: hidden;}
-.today-info{ width: 100%;padding: 20rpx 30rpx; border-bottom: 1px solid #b5e4ff; overflow: hidden; box-sizing: border-box;}
+.today-info{ width: 100%;padding: 30rpx; border-bottom: 1px solid #b5e4ff; overflow: hidden; box-sizing: border-box;}
 .today-info .fo-left{ float: left;}
 .today-info .fo-left .week{ font-size: 36rpx;}
 .today-info .fo-left .tian{ font-size: 30rpx; margin-left: 10rpx;}

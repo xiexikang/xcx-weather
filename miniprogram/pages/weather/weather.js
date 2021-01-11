@@ -30,6 +30,8 @@ Page({
     util.showLoading('加载中...')
     util.requestAjax.get('https://devapi.qweather.com/v7/weather/now', params)
       .then((res) => {
+        util.hideLoading();
+        wx.stopPullDownRefresh();
         if (res.data.code != 200) {
           return
         }
@@ -38,8 +40,6 @@ Page({
           weatherInfo: now,
           weekday: util.formatWeek(now.obsTime)
         })
-        util.hideLoading();
-        wx.stopPullDownRefresh();
       }).catch((err) => {})
     this.getHour(params);
     this.getSeven(params);

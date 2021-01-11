@@ -1,8 +1,8 @@
 
 <view class="wea-thead">
   <view class="we-name">{{cityName?cityName:'城市'}}</view>
-  <view class="we-regime">{{weatherInfo.text}}</view>
-  <view class="we-temperature">{{weatherInfo.temp}}</view>
+  <view class="we-regime">{{weatherInfo.text?weatherInfo.text:'-'}}</view>
+  <view class="we-temperature">{{weatherInfo.temp?weatherInfo.temp:'-'}}</view>
 </view>
 
 <view class="wea-today">
