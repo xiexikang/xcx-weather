@@ -56,7 +56,7 @@
     <view class="sea-result">
       <view class="res-list">
         <block wx:for='{{cityResultList}}' wx:for-item='v' wx:for-index='i' wx:key='key'>
-          <view class="li" data-cityname="{{v.name}}" data-longitude="{{v.lon}}" data-latitude="{{v.lat}}"
+          <view class="li" data-cityid="{{v.id}}" data-cityname="{{v.name}}" data-longitude="{{v.lon}}" data-latitude="{{v.lat}}"
             bindtap="bindChoose">{{v.name}}，{{v.adm2}}，{{v.adm1}}</view>
         </block>
       </view>
@@ -69,7 +69,7 @@
       <view class="hot-th">热门城市：</view>
       <view class="hot-list">
         <block wx:for='{{topCityList}}' wx:for-item='v' wx:for-index='i' wx:key='key'>
-          <view class="li" data-cityname="{{v.name}}" data-longitude="{{v.lon}}" data-latitude="{{v.lat}}"
+          <view class="li" data-cityid="{{v.id}}" data-cityname="{{v.name}}" data-longitude="{{v.lon}}" data-latitude="{{v.lat}}"
             bindtap="bindChoose">
             <label class="ti">{{v.name}}</label>
           </view>

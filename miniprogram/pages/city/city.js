@@ -51,8 +51,9 @@ Page({
     }).get({
       async success(res) {
         var result = res.data;
+        util.hideLoading();
+        wx.stopPullDownRefresh();
         if (result.length <= 0) {
-          util.hideLoading();
           return
         }
         var myCityList = result[0].cityList;
@@ -66,8 +67,7 @@ Page({
             loading: false
           })
         })
-        util.hideLoading();
-        wx.stopPullDownRefresh();
+
       },
       fail(err) {
         console.log(err)
@@ -91,6 +91,11 @@ Page({
           _openid: openid
         }).get().then(res => {
           const data = res.data;
+          const myCityListId = that.data.myCityList.map(item=>item.cityId)
+          if(myCityListId.includes(cityItem.cityId)){
+              util.showTip('当前选中的城市已存在');
+              return
+          }
           //没有自己-添加
           if (data.length <= 0) {
             var cityList = [];
@@ -239,13 +244,16 @@ Page({
 
   //搜索列表中的-选中该城市
   bindChoose(e) {
+    let d =  e.currentTarget.dataset;
     let chooseItem = {
-      cityName: e.currentTarget.dataset.cityname,
-      location: `${e.currentTarget.dataset.longitude},${e.currentTarget.dataset.latitude}`
+      cityId: d.cityid,
+      cityName: d.cityname,
+      location: `${d.longitude},${d.latitude}`
     }
     this.setData({
-      chooseItem: chooseItem
+      chooseItem: chooseItem,
     })
+    console.log(this.data.valueText)
     this.addCityWeather();
     this.bindAddPopHide();
   },
@@ -281,7 +289,10 @@ Page({
     this.setData({
       animSpread: animSpread.export(),
       animShrnk: animShrnk.export(),
-      isShowPop: true
+      isShowPop: true,
+      valueText: '',
+      cityResultList: [],
+      isShowHotCity: true
     })
   },
 
@@ -309,6 +320,7 @@ Page({
       isShowHotCity: true
     })
   },
+
 
   //开始触摸时
   touchstart(e) {
